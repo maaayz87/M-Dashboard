@@ -1,0 +1,22 @@
+# Runtime state and local-only data
+data/
+job-auth/
+__pycache__/
+.opencode/
+.claude/
+
+# Historical local backups
+*.bak-*
+
+# Local environment and editor files
+.env
+.env.*
+.DS_Store
+.vscode/
+.idea/
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+*.py[cod]
+*$py.class

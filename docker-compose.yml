@@ -1,0 +1,24 @@
+services:
+  service-hub:
+    build: .
+    container_name: service-hub
+    pid: "host"
+    ports:
+      - "3000:3000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data:/app/data
+      - ./templates:/app/templates:ro
+      - ./static:/app/static:ro
+      - /proc/1/net:/host/net:ro
+      - /:/host/root:ro
+    cap_add:
+      - SYS_ADMIN
+      - SYS_PTRACE
+    security_opt:
+      # 允许 nsenter 读 /proc/1/ns/* 并 setns 进 host namespace
+      - apparmor=unconfined
+      - seccomp=unconfined
+    restart: unless-stopped
+    environment:
+      - DB_PATH=/app/data/metrics.db

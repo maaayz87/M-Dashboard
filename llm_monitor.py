@@ -8,6 +8,30 @@ from pathlib import Path
 
 import requests
 
+
+def _load_dotenv(path=".env"):
+    """Load KEY=VALUE pairs from a .env file (no external dependency).
+
+    Existing environment variables take precedence, so values injected by
+    docker-compose / the host are never overwritten.
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            for raw in f:
+                line = raw.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, _, val = line.partition("=")
+                key = key.strip()
+                val = val.strip().strip('"').strip("'")
+                if key and key not in os.environ:
+                    os.environ[key] = val
+    except FileNotFoundError:
+        pass
+
+
+_load_dotenv(os.environ.get("DOTENV_PATH", ".env"))
+
 DEFAULT_INTERVAL = int(os.environ.get("LLM_PROBE_INTERVAL", "900"))
 ALLOWED_INTERVALS = (900, 3600, 10800)
 SETTINGS_PATH = os.environ.get("LLM_SETTINGS_PATH", "/app/data/llm_settings.json")
@@ -22,13 +46,13 @@ PROVIDERS = {
     "csu": {
         "label": "CSU Chat",
         "base_url": "https://api.chat.csu.edu.cn/v1",
-        "api_key": "sk-R2PWGIK1ySk1QdwOHTn2gqIiH0ad1SRetx5HuHRSd8g6aIxx",
+        "api_key": os.environ.get("CSU_API_KEY", ""),
         "models": ["DeepSeek", "GLM", "Qwen"],
     },
     "xtoken": {
         "label": "XToken GPT Mirror",
         "base_url": "https://api.xtokenmirror.com/v1",
-        "api_key": "sk-2f65c9f517c737e7d001c7accad8f294e98a2df770ec10c1495cd10cee0e57bd",
+        "api_key": os.environ.get("XTOKEN_API_KEY", ""),
         "models": [
             "gpt-6-astra",
             "gpt-5.6-sol",

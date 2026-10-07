@@ -1,0 +1,22 @@
+.git
+.gitignore
+.dockerignore
+
+# Secrets
+.env
+.env.*
+
+# Runtime / personal data (also volume-mounted at runtime)
+data/
+job-auth/
+__pycache__/
+*.py[cod]
+
+# Local tooling & history
+.opencode/
+.claude/
+.vscode/
+.idea/
+.pytest_cache/
+.mypy_cache/
+*.bak-*
